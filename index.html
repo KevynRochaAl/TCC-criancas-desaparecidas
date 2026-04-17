@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Desaparecidos</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <h2>Dashboard de Desaparecimentos</h2>
+
+    <p class="resumo">
+        Este projeto aborda o desafio da fragmentação de dados e do tempo crítico na busca por crianças desaparecidas, onde a falta de integração entre sistemas dificulta ações rápidas e eficazes. Como solução, propõe o uso de Inteligência Artificial e Visão Computacional para analisar dados históricos, identificar zonas de risco e perfis mais vulneráveis, além de acelerar processos de identificação. Dessa forma, busca-se reduzir o tempo de resposta e aumentar as chances de localização. <a href="https://www.datos.gov.co/Justicia-y-Derecho/Desaparecidos-en-Colombia-Hist-rico-enero-de-2026/8hqm-7fdt/about_data">Clique aqui para acessar a fonte dos dados utilizados na dashboard.</a>
+    </p>
+
+    <div class="main-page-container">
+        <div class="container-grafico">
+            <div class="grafico">
+                <canvas id="linha"></canvas>
+                <p class="descricao">Mostra a evolução dos desaparecimentos ao longo dos anos, ajudando a identificar tendências.</p>
+            </div>
+
+            <div class="grafico">
+                <canvas id="pizza"></canvas>
+                <p class="descricao">Apresenta a distribuição dos desaparecimentos por sexo, permitindo analisar grupos mais afetados.</p>
+            </div>
+        </div>
+        <div class="container-grafico">
+            <div class="grafico">
+                <canvas id="departamentos"></canvas>
+                <p class="descricao">Destaca os departamentos com maior número de casos, auxiliando na identificação de regiões críticas.</p>
+            </div>
+
+            <div class="grafico">
+                <canvas id="estado"></canvas>
+                <p class="descricao">Mostra o estado dos desaparecimentos, permitindo entender a situação geral dos casos.</p>
+            </div>
+        </div>
+
+        <div class="container-grafico">
+            <div class="grafico">
+                <canvas id="zona"></canvas>
+                <p class="descricao">Analisa a ocorrência por tipo de zona (urbana, povoado ou rural), revelando padrões geográficos.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        let dados = [];
+
+        /* ================= CARREGAR XLSX ================= */
+
+        fetch("desaparecidos_colombia.xlsx")
+            .then(res => res.arrayBuffer())
+            .then(dataBuffer => {
+                const workbook = XLSX.read(dataBuffer, { type: "array" });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                dados = XLSX.utils.sheet_to_json(sheet);
+
+                processarDados();
+            });
+
+        /* ================= PROCESSAMENTO ================= */
+
+        function contarPorCampo(campo) {
+            const contagem = {};
+            dados.forEach(d => {
+                const val = d[campo] || "Indefinido";
+                contagem[val] = (contagem[val] || 0) + 1;
+            });
+            return contagem;
+        }
+
+        function contarPorAno() {
+            const contagem = {};
+            dados.forEach(d => {
+                const data = d["data_do_desaparecimento"];
+                if (!data) return;
+
+                const ano = new Date(data).getFullYear();
+                contagem[ano] = (contagem[ano] || 0) + 1;
+            });
+
+            return contagem;
+        }
+
+        /* ================= GRÁFICOS ================= */
+
+        function processarDados() {
+
+            /* ---- Linha (por ano) ---- */
+            const porAno = contarPorAno();
+
+            new Chart(document.getElementById("linha"), {
+                type: "line",
+                data: {
+                    labels: Object.keys(porAno),
+                    datasets: [{
+                        label: "Desaparecimentos por ano",
+                        data: Object.values(porAno)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            /* ---- Pizza (sexo) ---- */
+            const sexo = contarPorCampo("sexo_do_desaparecido");
+
+            new Chart(document.getElementById("pizza"), {
+                type: "pie",
+                data: {
+                    labels: Object.keys(sexo),
+                    datasets: [{
+                        data: Object.values(sexo)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            /* ---- Departamentos ---- */
+            const dep = contarPorCampo("nome_departamento");
+
+            new Chart(document.getElementById("departamentos"), {
+                type: "bar",
+                data: {
+                    labels: Object.keys(dep).slice(0, 10),
+                    datasets: [{
+                        label: "Top 10 departamentos",
+                        data: Object.values(dep).slice(0, 10)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            /* ---- Estado ---- */
+            const estado = contarPorCampo("estado_do_desaparecimento");
+
+            new Chart(document.getElementById("estado"), {
+                type: "bar",
+                data: {
+                    labels: Object.keys(estado),
+                    datasets: [{
+                        label: "Casos por estado",
+                        data: Object.values(estado)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            /* ---- Zona ---- */
+            const zona = contarPorCampo("zona_de_ocorrencia_do_desaparecimento");
+
+            new Chart(document.getElementById("zona"), {
+                type: "bar",
+                data: {
+                    labels: Object.keys(zona),
+                    datasets: [{
+                        label: "Casos por zona",
+                        data: Object.values(zona)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>

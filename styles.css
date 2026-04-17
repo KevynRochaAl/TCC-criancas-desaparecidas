@@ -1,0 +1,66 @@
+/* ===== Geral ===== */
+body {
+    font-family: Arial;
+    margin: 20px;
+    background: #f5f5f5;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+/* ===== Resumo ===== */
+.resumo {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* ===== Layout ===== */
+.main-page-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.container-grafico {
+    display: flex;
+    gap: 20px;
+}
+
+/* ===== Cards dos gráficos ===== */
+.grafico {
+    flex: 1;
+    height: 330px;
+    background: white;
+    padding: 50px;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* ===== Canvas ===== */
+.grafico canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ===== Descrição ===== */
+.descricao {
+    font-size: 14px;
+    color: #555;
+    margin-top: 10px;
+    line-height: 1.4;
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 768px) {
+    .container-grafico {
+        flex-direction: column;
+    }
+}

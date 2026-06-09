@@ -76,10 +76,20 @@
             alert("Selecione uma imagem antes de processar.");
             return;
         }
-
         processButton.disabled = true;
-        processButton.classList.add("processing");
-        processButton.textContent = "⏳ Processando...";
+
+        const frames = [
+            "⏳ Processando",
+            "⏳ Processando.",
+            "⏳ Processando..",
+            "⏳ Processando..."
+        ];
+        let index = 0;
+
+        const interval = setInterval(() => {
+            processButton.textContent = frames[index];
+            index = (index + 1) % frames.length;
+        }, 300);
 
         const response = await fetch(
             "https://syc66fvwh44gh3gu4f5ov7ldte0tfust.lambda-url.us-east-1.on.aws/",
@@ -93,6 +103,7 @@
                 })
             }
         );
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
         const data = await response.json();
 
@@ -102,6 +113,7 @@
             desenharCaixas(data.boxes);
         }
 
+        clearInterval(interval);
         processButton.textContent = "Processar Imagem";
         processButton.classList.remove("processing");
         processButton.disabled = false;

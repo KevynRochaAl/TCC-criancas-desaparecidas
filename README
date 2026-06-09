@@ -3,6 +3,3 @@ Para carregar as dashboards abra o terminal e rode o comando:
 python -m http.server
 
 Aí é só acessar: http://localhost:8000/
-
-* Pode demorar um pouco pra carregar (inclusive aparecer mensagem de que o site não está respondendo umas 3 vezes) 
-  isso é por conta da quantidade de dados no .xlsm mas é só esperar que uma hora carrega.

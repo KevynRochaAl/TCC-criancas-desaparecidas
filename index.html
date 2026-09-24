@@ -1,143 +1,381 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCC - Crianças Desaparecidas</title>
+
+    <title>Crianças Desaparecidas</title>
+
     <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
-    <div class="main-container">
-        <div class="summary-container">
-            <h2>Crianças Desaparecidas</h2>
-            <p>Este projeto tem como objetivo explorar o uso da inteligência artificial no apoio à busca por crianças desaparecidas. Por meio de técnicas de visão computacional, o sistema analisa imagens enviadas pelo usuário para identificar automaticamente a presença de crianças, demonstrando como a tecnologia pode contribuir para tornar os processos de localização mais ágeis e eficientes.</p>
 
-            <div class="image-upload-container">
-                <label for="imageInput" class="upload-button">
-                    Realizar Upload da Imagem
-                </label>
-
-                <input
-                    type="file"
-                    id="imageInput"
-                    accept="image/*"
-                ></input>
-            </div>
-
-            <div class="image-container">
-                <div class="image-wrapper">
-                    <img id="preview" style="display:none;">
-                    <canvas id="canvas"></canvas>
+    <main class="main-container">
+        <section class="summary-container">
+            <!-- CABEÇALHO -->
+            <header class="page-header">
+                <div>
+                    <h1>Crianças Desaparecidas</h1>
+                    <p class="subtitle">Sistema de apoio à identificação por meio de análise de imagens.</p>
                 </div>
+
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    Sistema disponível
+                </div>
+            </header>
+
+            <!-- DESCRIÇÃO -->
+            <div class="intro">
+                <p>
+                    Envie uma imagem para que o sistema analise automaticamente
+                    a presença de pessoas e apresente as detecções encontradas.
+                </p>
             </div>
 
-            <div class="button-container">
-                <button id="processButton" onclick="enviarImagem()">Processar Imagem</button>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+            <!-- ÁREA PRINCIPAL -->
+            <section class="analysis-card">
+                <div class="section-heading">
+                    <div>
+                        <span class="section-label">ANÁLISE</span>
+                        <h2 id="imageTitle">Selecione uma imagem</h2>
+                    </div>
 
-<script>
-    let imagemBase64 = "";
+                    <label
+                        for="imageInput"
+                        class="upload-button"
+                    >
+                        Selecionar imagem
+                    </label>
 
-    const imageInput = document.getElementById("imageInput");
-    const preview = document.getElementById("preview");
-    const canvas = document.getElementById("canvas");
-    const processButton = document.getElementById("processButton");
-    
-    imageInput.addEventListener("change", (event) => {
-        const file = event.target.files[0];
+                    <input
+                        type="file"
+                        id="imageInput"
+                        accept="image/*"
+                    >
+                </div>
 
-        if (!file) return;
+                <!-- ÁREA DA IMAGEM -->
+                <div
+                    class="image-container"
+                    id="imageArea"
+                >
 
-        const reader = new FileReader();
+                    <!-- Estado inicial -->
+                    <div
+                        class="empty-state"
+                        id="emptyState"
+                    >
+                        <div class="upload-icon">↑</div>
+                        <h3>Envie uma imagem para análise</h3>
+                        <p>Selecione uma imagem do seu dispositivo para começar.</p>
 
-        reader.onload = function(e) {
-            imagemBase64 = e.target.result.split(",")[1];
+                        <label
+                            for="imageInput"
+                            class="secondary-upload"
+                        >
+                            Escolher imagem
+                        </label>
+                    </div>
 
-            preview.src = e.target.result;
-            preview.style.display = "block";
+                    <!-- Preview -->
+                    <div
+                        class="image-wrapper"
+                        id="imageWrapper"
+                        style="display: none;"
+                    >
+                        <img
+                            id="preview"
+                            alt="Imagem selecionada"
+                        >
+                        <canvas id="canvas"></canvas>
+                    </div>
+                </div>
 
-            preview.onload = () => {
-                canvas.width = preview.clientWidth;
-                canvas.height = preview.clientHeight;
-                canvas.style.width = preview.clientWidth + "px";
-                canvas.style.height = preview.clientHeight + "px";
-            };
-        };
+                <!-- LEGENDA -->
+                <div class="legend">
 
-        reader.readAsDataURL(file);
-    });
+                    <span class="legend-title">
+                        Categorias
+                    </span>
 
-    async function enviarImagem() {
-        if (!imagemBase64) {
-            alert("Selecione uma imagem antes de processar.");
-            return;
-        }
-        processButton.disabled = true;
+                    <span class="legend-item">
+                        <i class="legend-dot child"></i>
+                        Criança
+                    </span>
 
-        const frames = [
-            "⏳ Processando",
-            "⏳ Processando.",
-            "⏳ Processando..",
-            "⏳ Processando..."
-        ];
-        let index = 0;
+                    <span class="legend-item">
+                        <i class="legend-dot adult"></i>
+                        Adulto
+                    </span>
 
-        const interval = setInterval(() => {
-            processButton.textContent = frames[index];
-            index = (index + 1) % frames.length;
-        }, 300);
+                    <span class="legend-item">
+                        <i class="legend-dot other"></i>
+                        Outro
+                    </span>
+                </div>
 
-        const response = await fetch(
-            "https://syc66fvwh44gh3gu4f5ov7ldte0tfust.lambda-url.us-east-1.on.aws/",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    image: imagemBase64
-                })
+                <!-- BOTÃO -->
+                <div class="action-row">
+                    <button
+                        id="processButton"
+                        onclick="enviarImagem()"
+                        disabled
+                    >
+                        Processar imagem
+                    </button>
+                </div>
+            </section>
+
+
+            <!-- RESULTADO -->
+            <section
+                class="result-card"
+                id="resultCard"
+                style="display: none;"
+            >
+
+                <div class="section-heading result-heading">
+                    <div>
+                        <span class="section-label">RESULTADO</span>
+                        <h2>Análise concluída</h2>
+                    </div>
+                    <span class="result-status">✓ Concluído</span>
+                </div>
+
+
+                <div class="result-grid">
+                    <!-- CHILD -->
+                    <div class="result-item child-result">
+                        <span class="result-icon">●</span>
+                        <div>
+                            <strong id="childCount">0</strong>
+                            <span>Crianças</span>
+                        </div>
+                    </div>
+
+                    <!-- ADULT -->
+                    <div class="result-item adult-result">
+                        <span class="result-icon">●</span>
+                        <div>
+                            <strong id="adultCount">0</strong>
+                            <span>Adultos</span>
+                        </div>
+                    </div>
+
+                    <!-- OTHER -->
+                    <div class="result-item other-result">
+                        <span class="result-icon">●</span>
+                        <div>
+                            <strong id="otherCount">0</strong>
+                            <span>Outros</span>
+                        </div>
+                    </div>
+
+                    <!-- TOTAL -->
+                    <div class="result-item total-result">
+                        <span class="result-icon">#</span>
+                        <div>
+                            <strong id="totalCount">0</strong>
+                            <span>Total detectado</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+
+    <script>
+        let imagemBase64 = "";
+
+        const API_URL = "http://ec2-54-234-83-153.compute-1.amazonaws.com:5000/detect-cnn";
+
+        const imageInput = document.getElementById("imageInput");
+        const preview = document.getElementById("preview");
+        const canvas = document.getElementById("canvas");
+        const processButton = document.getElementById("processButton");
+        const emptyState = document.getElementById("emptyState");
+        const imageWrapper = document.getElementById("imageWrapper");
+        const imageTitle = document.getElementById("imageTitle");
+        const resultCard = document.getElementById("resultCard");
+
+        // =========================
+        // UPLOAD DA IMAGEM
+        // =========================
+
+        imageInput.addEventListener(
+            "change",
+            (event) => {
+                const file = event.target.files[0];
+
+                if (!file) return;
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    imagemBase64 = e.target.result.split(",")[1];
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                    emptyState.style.display = "none";
+                    imageWrapper.style.display = "inline-block";
+                    imageTitle.textContent = file.name;
+                    processButton.disabled = false;
+                    resultCard.style.display = "none";
+
+                    preview.onload = () => {
+                        canvas.width = preview.clientWidth;
+                        canvas.height = preview.clientHeight;
+                        canvas.style.width = preview.clientWidth + "px";
+                        canvas.style.height = preview.clientHeight + "px";
+                    };
+                };
+
+
+                reader.readAsDataURL(file);
+
             }
         );
-        await new Promise(resolve => setTimeout(resolve, 3000));
 
-        const data = await response.json();
 
-        if (data.status !== "success") {
-            alert("Ocorreu um erro ao processar a imagem. Tente novamente.");
-        } else {
-            desenharCaixas(data.boxes);
+        // =========================
+        // ENVIO PARA A API
+        // =========================
+
+        async function enviarImagem() {
+            if (!imagemBase64) {
+                alert("Selecione uma imagem antes de processar.");
+                return;
+            }
+            processButton.disabled = true;
+            processButton.classList.add("processing");
+
+            const frames = [
+                "⏳ Processando",
+                "⏳ Processando.",
+                "⏳ Processando..",
+                "⏳ Processando..."
+            ];
+            
+            let index = 0;
+
+            const interval = setInterval(() => {
+                processButton.textContent = frames[index];
+                index = (index + 1) % frames.length;
+            }, 300);
+
+            try {
+                const response = await fetch(
+                    API_URL,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                            "application/json"
+                        },
+                        body: JSON.stringify({
+                            image: imagemBase64
+                        })
+                    }
+                );
+
+
+                if (!response.ok) {
+                    throw new Error("HTTP " + response.status);
+                }
+                const data = await response.json();
+
+                if (data.status !== "success") {
+                    alert("Ocorreu um erro ao processar a imagem. Tente novamente.");
+                } else {
+                    desenharCaixas(data.boxes);
+                    atualizarResultado(data.boxes);
+                    resultCard.style.display = "block";
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Não foi possível conectar à API. Verifique se o serviço está disponível.");
+            } finally {
+                clearInterval(interval);
+
+                processButton.textContent = "Processar imagem";
+                processButton.classList.remove("processing");
+                processButton.disabled = false;
+            }
         }
 
-        clearInterval(interval);
-        processButton.textContent = "Processar Imagem";
-        processButton.classList.remove("processing");
-        processButton.disabled = false;
-    }
+        // =========================
+        // DESENHAR BOUNDING BOXES
+        // =========================
 
-    function desenharCaixas(boxes) {
-        const ctx = canvas.getContext("2d");
+        function desenharCaixas(boxes) {
+            const ctx = canvas.getContext("2d");
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 3;
-
-        const scaleX = preview.clientWidth / preview.naturalWidth;
-        const scaleY = preview.clientHeight / preview.naturalHeight;
-
-        boxes.forEach(box => {
-
-            ctx.strokeRect(
-                box.x * scaleX,
-                box.y * scaleY,
-                box.w * scaleX,
-                box.h * scaleY
+            ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
             );
-        });
-    }
-</script>
+            const scaleX = preview.clientWidth / preview.naturalWidth;
+            const scaleY = preview.clientHeight / preview.naturalHeight;
+
+            boxes.forEach(box => {
+                // Define a cor pela categoria
+                switch (box.category) {
+                    case "Child":
+                        ctx.strokeStyle = "#2563eb";
+                        break;
+
+                    case "Adult":
+                        ctx.strokeStyle = "#16a34a";
+                        break;
+
+                    case "Other":
+                        ctx.strokeStyle = "#ea580c";
+                        break;
+
+                    default:
+                        ctx.strokeStyle = "#dc2626";
+                        break;
+                }
+
+                ctx.lineWidth = 3;
+                ctx.strokeRect(
+                    box.x * scaleX,
+                    box.y * scaleY,
+                    box.w * scaleX,
+                    box.h * scaleY
+                );
+            });
+        }
+
+        // =========================
+        // ATUALIZAR RESULTADOS
+        // =========================
+
+        function atualizarResultado(boxes) {
+            const counts = {
+                Child: 0,
+                Adult: 0,
+                Other: 0
+            };
+
+
+            boxes.forEach(box => {
+                if (box.category in counts) {
+                    counts[box.category]++;
+                }
+            });
+
+            document.getElementById("childCount").textContent = counts.Child;
+            document.getElementById("adultCount").textContent = counts.Adult;
+            document.getElementById("otherCount").textContent = counts.Other;
+            document.getElementById("totalCount").textContent = boxes.length;
+        }
+    </script>
+</body>
+
+</html>

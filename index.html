@@ -1,197 +1,343 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Crianças Desaparecidas</title>
+        <title>Crianças Desaparecidas</title>
 
-    <link rel="stylesheet" href="index.css">
-</head>
+        <link rel="stylesheet" href="index.css?v=3">
+    </head>
 
-<body>
+    <body>
 
-    <main class="main-container">
-        <section class="summary-container">
-            <!-- CABEÇALHO -->
-            <header class="page-header">
-                <div>
-                    <h1>Crianças Desaparecidas</h1>
-                    <p class="subtitle">Sistema de apoio à identificação por meio de análise de imagens.</p>
-                </div>
-
-                <div class="status-badge">
-                    <span class="status-dot"></span>
-                    Sistema disponível
-                </div>
-            </header>
-
-            <!-- DESCRIÇÃO -->
-            <div class="intro">
-                <p>
-                    Envie uma imagem para que o sistema analise automaticamente
-                    a presença de pessoas e apresente as detecções encontradas.
-                </p>
-            </div>
-
-            <!-- ÁREA PRINCIPAL -->
-            <section class="analysis-card">
-                <div class="section-heading">
+        <main class="main-container">
+            <section class="summary-container">
+                <!-- CABEÇALHO -->
+                <header class="page-header">
                     <div>
-                        <span class="section-label">ANÁLISE</span>
-                        <h2 id="imageTitle">Selecione uma imagem</h2>
+                        <h1>Crianças Desaparecidas</h1>
+                        <p class="subtitle">Sistema de apoio à identificação por
+                            meio de análise de imagens.</p>
                     </div>
 
-                    <label
-                        for="imageInput"
-                        class="upload-button"
-                    >
-                        Selecionar imagem
-                    </label>
-
-                    <input
-                        type="file"
-                        id="imageInput"
-                        accept="image/*"
-                    >
-                </div>
-
-                <!-- ÁREA DA IMAGEM -->
-                <div
-                    class="image-container"
-                    id="imageArea"
-                >
-
-                    <!-- Estado inicial -->
-                    <div
-                        class="empty-state"
-                        id="emptyState"
-                    >
-                        <div class="upload-icon">↑</div>
-                        <h3>Envie uma imagem para análise</h3>
-                        <p>Selecione uma imagem do seu dispositivo para começar.</p>
-
-                        <label
-                            for="imageInput"
-                            class="secondary-upload"
-                        >
-                            Escolher imagem
-                        </label>
+                    <div class="status-badge">
+                        <span class="status-dot"></span>
+                        Sistema disponível
                     </div>
+                </header>
 
-                    <!-- Preview -->
-                    <div
-                        class="image-wrapper"
-                        id="imageWrapper"
-                        style="display: none;"
-                    >
-                        <img
-                            id="preview"
-                            alt="Imagem selecionada"
-                        >
-                        <canvas id="canvas"></canvas>
-                    </div>
-                </div>
-
-                <!-- LEGENDA -->
-                <div class="legend">
-
-                    <span class="legend-title">
-                        Categorias
-                    </span>
-
-                    <span class="legend-item">
-                        <i class="legend-dot child"></i>
-                        Criança
-                    </span>
-
-                    <span class="legend-item">
-                        <i class="legend-dot adult"></i>
-                        Adulto
-                    </span>
-
-                    <span class="legend-item">
-                        <i class="legend-dot other"></i>
-                        Outro
-                    </span>
-                </div>
-
-                <!-- BOTÃO -->
-                <div class="action-row">
-                    <button
-                        id="processButton"
-                        onclick="enviarImagem()"
-                        disabled
-                    >
-                        Processar imagem
+                <!-- NAVEGAÇÃO ENTRE TELAS -->
+                <nav class="tab-navigation" aria-label="Navegação principal">
+                    <button class="tab-button active" type="button"
+                        data-tab="identificar">
+                        <span class="tab-icon">⌕</span> Identificar Imagem
                     </button>
-                </div>
+                    <button class="tab-button" type="button" data-tab="enviar">
+                        <span class="tab-icon">＋</span> Enviar Imagens
+                    </button>
+                    <button class="tab-button" type="button"
+                        data-tab="dashboard">
+                        <span class="tab-icon">▥</span> Dashboard
+                    </button>
+                </nav>
+
+                <section class="tab-panel active" id="tab-identificar">
+                    <!-- DESCRIÇÃO -->
+                    <div class="intro">
+                        <p>
+                            Envie uma imagem para que o sistema analise
+                            automaticamente
+                            a presença de pessoas e apresente as detecções
+                            encontradas.
+                        </p>
+                    </div>
+
+                    <!-- ÁREA PRINCIPAL -->
+                    <section class="analysis-card">
+                        <div class="section-heading">
+                            <div>
+                                <span class="section-label">ANÁLISE</span>
+                                <h2 id="imageTitle">Selecione uma imagem</h2>
+                            </div>
+
+                            <label
+                                for="imageInput"
+                                class="upload-button">
+                                Selecionar imagem
+                            </label>
+
+                            <input
+                                type="file"
+                                id="imageInput"
+                                accept="image/*">
+                        </div>
+
+                        <!-- ÁREA DA IMAGEM -->
+                        <div
+                            class="image-container"
+                            id="imageArea">
+
+                            <!-- Estado inicial -->
+                            <div
+                                class="empty-state"
+                                id="emptyState">
+                                <div class="upload-icon">↑</div>
+                                <h3>Envie uma imagem para análise</h3>
+                                <p>Selecione uma imagem do seu dispositivo para
+                                    começar.</p>
+
+                                <label
+                                    for="imageInput"
+                                    class="secondary-upload">
+                                    Escolher imagem
+                                </label>
+                            </div>
+
+                            <!-- Preview -->
+                            <div
+                                class="image-wrapper"
+                                id="imageWrapper"
+                                style="display: none;">
+                                <img
+                                    id="preview"
+                                    alt="Imagem selecionada">
+                                <canvas id="canvas"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- LEGENDA -->
+                        <div class="legend">
+
+                            <span class="legend-title">
+                                Categorias
+                            </span>
+
+                            <span class="legend-item">
+                                <i class="legend-dot child"></i>
+                                Criança
+                            </span>
+
+                            <span class="legend-item">
+                                <i class="legend-dot adult"></i>
+                                Adulto
+                            </span>
+
+                            <span class="legend-item">
+                                <i class="legend-dot other"></i>
+                                Outro
+                            </span>
+                        </div>
+
+                        <!-- BOTÃO -->
+                        <div class="action-row">
+                            <button
+                                id="processButton"
+                                onclick="enviarImagem()"
+                                disabled>
+                                Processar imagem
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- RESULTADO -->
+                    <section
+                        class="result-card"
+                        id="resultCard"
+                        style="display: none;">
+
+                        <div class="section-heading result-heading">
+                            <div>
+                                <span class="section-label">RESULTADO</span>
+                                <h2>Análise concluída</h2>
+                            </div>
+                            <span class="result-status">✓ Concluído</span>
+                        </div>
+
+                        <div class="result-grid">
+                            <!-- CHILD -->
+                            <div class="result-item child-result">
+                                <span class="result-icon">●</span>
+                                <div>
+                                    <strong id="childCount">0</strong>
+                                    <span>Crianças</span>
+                                </div>
+                            </div>
+
+                            <!-- ADULT -->
+                            <div class="result-item adult-result">
+                                <span class="result-icon">●</span>
+                                <div>
+                                    <strong id="adultCount">0</strong>
+                                    <span>Adultos</span>
+                                </div>
+                            </div>
+
+                            <!-- OTHER -->
+                            <div class="result-item other-result">
+                                <span class="result-icon">●</span>
+                                <div>
+                                    <strong id="otherCount">0</strong>
+                                    <span>Outros</span>
+                                </div>
+                            </div>
+
+                            <!-- TOTAL -->
+                            <div class="result-item total-result">
+                                <span class="result-icon">#</span>
+                                <div>
+                                    <strong id="totalCount">0</strong>
+                                    <span>Total detectado</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+
+                <!-- TELA: ENVIO DE MÚLTIPLAS IMAGENS -->
+                <section class="tab-panel" id="tab-enviar" hidden>
+                    <div class="intro">
+                        <p>Cadastre imagens de referência para que possam ser
+                            utilizadas em identificações futuras.</p>
+                    </div>
+
+                    <section class="analysis-card">
+                        <div class="section-heading">
+                            <div>
+                                <span class="section-label">BASE DE
+                                    IMAGENS</span>
+                                <h2>Enviar imagens para identificação</h2>
+                            </div>
+                            <span class="upload-counter" id="uploadCounter">0
+                                imagens selecionadas</span>
+                        </div>
+
+                        <label class="multi-upload-area"
+                            for="multipleImageInput" id="multiUploadArea">
+                            <span class="upload-icon">↑</span>
+                            <strong>Adicione suas imagens</strong>
+                            <span>Arraste os arquivos até aqui ou clique para
+                                selecionar</span>
+                            <small>Você pode selecionar múltiplas imagens de uma
+                                só vez.</small>
+                            <span class="secondary-upload">Selecionar
+                                imagens</span>
+                        </label>
+                        <input type="file" id="multipleImageInput"
+                            accept="image/*" multiple>
+
+                        <div class="selected-files" id="selectedFiles">
+                            <p class="muted-text">Nenhuma imagem
+                                selecionada.</p>
+                        </div>
+
+                        <div class="action-row">
+                            <button id="uploadButton" type="button"
+                                disabled>Enviar imagens</button>
+                        </div>
+                        <div class="upload-feedback" id="uploadFeedback"
+                            role="status" aria-live="polite"></div>
+                    </section>
+                </section>
+
+                <!-- TELA: DASHBOARD -->
+                <section class="tab-panel" id="tab-dashboard" hidden>
+                    <div class="intro">
+                        <p>Acompanhe os dados consolidados das análises
+                            realizadas pelo sistema.</p>
+                    </div>
+
+                    <section class="dashboard-section">
+                        <div class="section-heading">
+                            <div>
+                                <span class="section-label">VISÃO GERAL</span>
+                                <h2>Dashboard de identificações</h2>
+                            </div>
+                            <button class="secondary-button" type="button"
+                                id="refreshDashboard">Atualizar dados</button>
+                        </div>
+
+                        <div class="dashboard-grid">
+                            <article class="dashboard-card">
+                                <span class="dashboard-card-label">Crianças
+                                    identificadas</span>
+                                <strong id="dashChildren">--</strong>
+                                <span class="dashboard-card-note">Total
+                                    registrado</span>
+                            </article>
+                            <article class="dashboard-card">
+                                <span class="dashboard-card-label">Adultos
+                                    detectados</span>
+                                <strong id="dashAdults">--</strong>
+                                <span class="dashboard-card-note">Total
+                                    registrado</span>
+                            </article>
+                            <article class="dashboard-card">
+                                <span class="dashboard-card-label">Outros</span>
+                                <strong id="dashOthers">--</strong>
+                                <span class="dashboard-card-note">Total
+                                    registrado</span>
+                            </article>
+                            <article class="dashboard-card">
+                                <span class="dashboard-card-label">Total de
+                                    detecções</span>
+                                <strong id="dashTotal">--</strong>
+                                <span class="dashboard-card-note">Todas as
+                                    categorias</span>
+                            </article>
+                        </div>
+
+                        <div class="dashboard-detail-card">
+                            <div class="dashboard-card-heading">
+                                <div>
+                                    <span class="section-label">EVOLUÇÃO</span>
+                                    <h3>Volume de detecções por dia</h3>
+                                </div>
+                                <span class="chart-caption">Quantidade de
+                                    registros</span>
+                            </div>
+                            <div class="dashboard-chart" id="dashboardChart">
+                                <p class="empty-chart">Os dados do gráfico serão
+                                    exibidos após o carregamento.</p>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-detail-card">
+                            <div>
+                                <span class="section-label">HISTÓRICO</span>
+                                <h3>Detecções por data</h3>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="dashboard-table">
+                                    <thead>
+                                        <tr><th>Data</th><th>Crianças</th><th>Adultos</th><th>Outros</th><th>Total</th></tr>
+                                    </thead>
+                                    <tbody id="dashboardHistory">
+                                        <tr><td colspan="5"
+                                                class="empty-table">Os dados
+                                                serão carregados ao abrir o
+                                                dashboard.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="upload-feedback" id="dashboardFeedback"
+                            role="status" aria-live="polite"></div>
+                    </section>
+                </section>
             </section>
+        </main>
 
-
-            <!-- RESULTADO -->
-            <section
-                class="result-card"
-                id="resultCard"
-                style="display: none;"
-            >
-
-                <div class="section-heading result-heading">
-                    <div>
-                        <span class="section-label">RESULTADO</span>
-                        <h2>Análise concluída</h2>
-                    </div>
-                    <span class="result-status">✓ Concluído</span>
-                </div>
-
-
-                <div class="result-grid">
-                    <!-- CHILD -->
-                    <div class="result-item child-result">
-                        <span class="result-icon">●</span>
-                        <div>
-                            <strong id="childCount">0</strong>
-                            <span>Crianças</span>
-                        </div>
-                    </div>
-
-                    <!-- ADULT -->
-                    <div class="result-item adult-result">
-                        <span class="result-icon">●</span>
-                        <div>
-                            <strong id="adultCount">0</strong>
-                            <span>Adultos</span>
-                        </div>
-                    </div>
-
-                    <!-- OTHER -->
-                    <div class="result-item other-result">
-                        <span class="result-icon">●</span>
-                        <div>
-                            <strong id="otherCount">0</strong>
-                            <span>Outros</span>
-                        </div>
-                    </div>
-
-                    <!-- TOTAL -->
-                    <div class="result-item total-result">
-                        <span class="result-icon">#</span>
-                        <div>
-                            <strong id="totalCount">0</strong>
-                            <span>Total detectado</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
-    </main>
-
-
-    <script>
+        <script>
         let imagemBase64 = "";
 
-        const API_URL = "http://ec2-34-224-66-188.compute-1.amazonaws.com:5000/";
+        const API_BASE_URL = "http://ec2-34-224-66-188.compute-1.amazonaws.com:5000/";
+
+        // Endpoints independentes: altere cada rota aqui quando necessário.
+        const API_IDENTIFICAR_URL = API_BASE_URL + "detect-cnn";
+        const API_ENVIO_URL = API_BASE_URL + "upload-images"; // Rota provisória para envio múltiplo ao S3.
+        const API_DASHBOARD_URL = API_BASE_URL + "dashboard-data";
 
         const imageInput = document.getElementById("imageInput");
         const preview = document.getElementById("preview");
@@ -267,7 +413,7 @@
 
             try {
                 const response = await fetch(
-                    API_URL + "detect-cnn",
+                    API_IDENTIFICAR_URL,
                     {
                         method: "POST",
                         headers: {
@@ -387,7 +533,7 @@
             } else {
                 try {
                     const response = await fetch(
-                        API_URL + "detections",
+                        API_BASE_URL + "detections",
                         {
                             method: "GET",
                             headers: {
@@ -421,7 +567,7 @@
             } else {
                 try {
                     const response = await fetch(
-                        API_URL + "detection/" + key,
+                        API_BASE_URL + "detection/" + key,
                         {
                             method: "GET",
                             headers: {
@@ -455,7 +601,7 @@
             } else {
                 try {
                     const response = await fetch(
-                        API_URL + "dashboard-data",
+                        API_DASHBOARD_URL,
                         {
                             method: "GET",
                             headers: {
@@ -576,10 +722,247 @@
             }
         };
 
-        obterDeteccoes();
-        obterDeteccaoPorChave("2026-10-18T14:49:08.441183-a4dd0c62-91b1-43bd-8396-6aa40c185be9.json");
-        obterDadosDash();
+        // Os dados do dashboard são carregados quando a aba é aberta.
+
+
+        // =========================
+        // NAVEGAÇÃO ENTRE AS TELAS
+        // =========================
+        const tabButtons = document.querySelectorAll(".tab-button");
+        const tabPanels = document.querySelectorAll(".tab-panel");
+        let dashboardLoaded = false;
+
+        tabButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const selectedTab = button.dataset.tab;
+
+                tabButtons.forEach(item => {
+                    const active = item === button;
+                    item.classList.toggle("active", active);
+                    item.setAttribute("aria-selected", active ? "true" : "false");
+                });
+
+                tabPanels.forEach(panel => {
+                    const active = panel.id === "tab-" + selectedTab;
+                    panel.classList.toggle("active", active);
+                    panel.hidden = !active;
+                });
+
+                if (selectedTab === "dashboard" && !dashboardLoaded) {
+                    obterDadosDash();
+                }
+            });
+        });
+
+        // =========================
+        // SELEÇÃO E ENVIO DE VÁRIAS IMAGENS
+        // =========================
+        const multipleImageInput = document.getElementById("multipleImageInput");
+        const uploadButton = document.getElementById("uploadButton");
+        const selectedFilesContainer = document.getElementById("selectedFiles");
+        const uploadCounter = document.getElementById("uploadCounter");
+        const uploadFeedback = document.getElementById("uploadFeedback");
+        let selectedImages = [];
+
+        multipleImageInput.addEventListener("change", () => {
+            selectedImages = Array.from(multipleImageInput.files || [])
+                .filter(file => file.type.startsWith("image/"));
+            renderSelectedImages();
+        });
+
+        function renderSelectedImages() {
+            const totalBytes = selectedImages.reduce((sum, file) => sum + file.size, 0);
+            uploadCounter.textContent = `${selectedImages.length} ${selectedImages.length === 1 ? "imagem selecionada" : "imagens selecionadas"}`;
+            uploadButton.disabled = selectedImages.length === 0;
+
+            if (selectedImages.length === 0) {
+                selectedFilesContainer.innerHTML = '<p class="muted-text">Nenhuma imagem selecionada. Os arquivos escolhidos aparecerão aqui antes do envio.</p>';
+                return;
+            }
+
+            const previews = selectedImages.map((file, index) => {
+                const imageUrl = URL.createObjectURL(file);
+                return `
+                    <article class="selected-image-card">
+                        <img src="${imageUrl}" alt="Prévia de ${escapeHtml(file.name)}">
+                        <div class="selected-image-info">
+                            <strong title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</strong>
+                            <span>${formatFileSize(file.size)}</span>
+                        </div>
+                        <button type="button" class="remove-file" data-index="${index}" aria-label="Remover ${escapeHtml(file.name)}" title="Remover imagem">×</button>
+                    </article>
+                `;
+            }).join("");
+
+            selectedFilesContainer.innerHTML = `
+                <div class="selected-files-heading">
+                    <strong>Arquivos selecionados</strong>
+                    <span>${formatFileSize(totalBytes)} no total</span>
+                </div>
+                <div class="selected-images-grid">${previews}</div>
+            `;
+
+            selectedFilesContainer.querySelectorAll(".remove-file").forEach(button => {
+                button.addEventListener("click", () => {
+                    selectedImages.splice(Number(button.dataset.index), 1);
+                    renderSelectedImages();
+                });
+            });
+        }
+
+        function escapeHtml(value) {
+            return value.replace(/[&<>"']/g, character => ({
+                "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+            })[character]);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+            return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+        }
+
+        uploadButton.addEventListener("click", enviarMultiplasImagens);
+
+        async function enviarMultiplasImagens() {
+            if (selectedImages.length === 0) return;
+
+            const formData = new FormData();
+            selectedImages.forEach(file => formData.append("images", file));
+
+            uploadButton.disabled = true;
+            uploadButton.textContent = "Enviando...";
+            uploadFeedback.textContent = "Enviando imagens. Aguarde...";
+            uploadFeedback.className = "upload-feedback info";
+
+            try {
+                const response = await fetch(API_ENVIO_URL, {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error("HTTP " + response.status);
+
+                const data = await response.json();
+                uploadFeedback.textContent = data.message || "Imagens enviadas com sucesso.";
+                uploadFeedback.className = "upload-feedback success";
+                selectedImages = [];
+                multipleImageInput.value = "";
+                renderSelectedImages();
+            } catch (error) {
+                console.error("Erro ao enviar imagens:", error);
+                uploadFeedback.textContent = "Não foi possível enviar as imagens. Verifique a rota provisória e a disponibilidade da API.";
+                uploadFeedback.className = "upload-feedback error";
+            } finally {
+                uploadButton.textContent = "Enviar imagens";
+                uploadButton.disabled = selectedImages.length === 0;
+            }
+        }
+
+        // Suporte a arrastar e soltar imagens na área de upload.
+        const multiUploadArea = document.getElementById("multiUploadArea");
+        ["dragenter", "dragover"].forEach(eventName => {
+            multiUploadArea.addEventListener(eventName, event => {
+                event.preventDefault();
+                multiUploadArea.classList.add("drag-over");
+            });
+        });
+        ["dragleave", "drop"].forEach(eventName => {
+            multiUploadArea.addEventListener(eventName, event => {
+                event.preventDefault();
+                multiUploadArea.classList.remove("drag-over");
+            });
+        });
+        multiUploadArea.addEventListener("drop", event => {
+            const dropped = Array.from(event.dataTransfer.files || [])
+                .filter(file => file.type.startsWith("image/"));
+            selectedImages = selectedImages.concat(dropped);
+            renderSelectedImages();
+        });
+
+        // =========================
+        // DADOS DO DASHBOARD
+        // =========================
+        document.getElementById("refreshDashboard").addEventListener("click", obterDadosDash);
+
+        async function obterDadosDash() {
+            const feedback = document.getElementById("dashboardFeedback");
+            feedback.textContent = "Carregando dados...";
+            feedback.className = "upload-feedback info";
+
+            try {
+                const response = await fetch(API_DASHBOARD_URL, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (!response.ok) throw new Error("HTTP " + response.status);
+                const data = await response.json();
+                renderDashboard(data);
+                dashboardLoaded = true;
+                feedback.textContent = "Dados atualizados.";
+                feedback.className = "upload-feedback success";
+            } catch (error) {
+                console.error("Erro ao carregar dashboard:", error);
+                feedback.textContent = "Não foi possível carregar os dados do dashboard. Verifique a API.";
+                feedback.className = "upload-feedback error";
+            }
+        }
+
+        function renderDashboard(data) {
+            const totals = data.total || {};
+            const children = Number(totals.Child || 0);
+            const adults = Number(totals.Adult || 0);
+            const others = Number(totals.Other || 0);
+            const total = children + adults + others;
+
+            document.getElementById("dashChildren").textContent = children;
+            document.getElementById("dashAdults").textContent = adults;
+            document.getElementById("dashOthers").textContent = others;
+            document.getElementById("dashTotal").textContent = total;
+
+            const history = data.by_date || {};
+            const rows = Object.entries(history).sort(([dateA], [dateB]) => dateB.localeCompare(dateA));
+            const tbody = document.getElementById("dashboardHistory");
+
+            if (rows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-table">Nenhum registro encontrado.</td></tr>';
+                document.getElementById("dashboardChart").innerHTML = '<p class="empty-chart">Ainda não existem dados para montar o gráfico.</p>';
+                return;
+            }
+
+            tbody.innerHTML = rows.map(([date, values]) => {
+                const childCount = Number(values.Child || 0);
+                const adultCount = Number(values.Adult || 0);
+                const otherCount = Number(values.Other || 0);
+                const rowTotal = childCount + adultCount + otherCount;
+                return `<tr>
+                    <td>${escapeHtml(date)}</td>
+                    <td>${childCount}</td>
+                    <td>${adultCount}</td>
+                    <td>${otherCount}</td>
+                    <td><strong>${rowTotal}</strong></td>
+                </tr>`;
+            }).join("");
+
+            const chartRows = rows.slice().reverse();
+            const maxValue = Math.max(1, ...chartRows.map(([, values]) =>
+                Number(values.Child || 0) + Number(values.Adult || 0) + Number(values.Other || 0)
+            ));
+
+            document.getElementById("dashboardChart").innerHTML = chartRows.map(([date, values]) => {
+                const dayTotal = Number(values.Child || 0) + Number(values.Adult || 0) + Number(values.Other || 0);
+                const width = dayTotal > 0 ? Math.max(2, (dayTotal / maxValue) * 100) : 0;
+                return `
+                    <div class="chart-row">
+                        <span class="chart-date">${escapeHtml(date)}</span>
+                        <div class="chart-track"><div class="chart-bar" style="width:${width}%"></div></div>
+                        <strong class="chart-value">${dayTotal}</strong>
+                    </div>
+                `;
+            }).join("");
+        }
+
     </script>
-</body>
+    </body>
 
 </html>

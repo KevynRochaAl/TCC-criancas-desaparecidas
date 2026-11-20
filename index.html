@@ -332,9 +332,9 @@
         <script>
         let imagemBase64 = "";
 
-        const API_BASE_URL = "http://ec2-34-224-66-188.compute-1.amazonaws.com:5000/";
+        const API_BASE_URL = "http://ec2-107-21-157-142.compute-1.amazonaws.com:5000/";
 
-        const API_IDENTIFICAR_URL = API_BASE_URL + "detect-cnn";
+        const API_IDENTIFICAR_URL = API_BASE_URL + "detect-yolo";
         const API_ENVIO_URL = API_BASE_URL + "upload-images"; // Rota provisória para envio múltiplo ao S3.
         const API_DASHBOARD_URL = API_BASE_URL + "dashboard-data";
 
@@ -766,6 +766,17 @@
         multipleImageInput.addEventListener("change", () => {
             selectedImages = Array.from(multipleImageInput.files || [])
                 .filter(file => file.type.startsWith("image/"));
+
+            selectedImagesBase64 = [];
+            selectedImages.forEach(file => { 
+                console.log('==== file', file);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    selectedImagesBase64.push(reader.result.split(',')[1]);
+                }
+            });
+
             renderSelectedImages();
         });
 
@@ -825,9 +836,6 @@
         async function enviarMultiplasImagens() {
             if (selectedImages.length === 0) return;
 
-            const formData = new FormData();
-            selectedImages.forEach(file => formData.append("images", file));
-
             uploadButton.disabled = true;
             uploadButton.textContent = "Enviando...";
             uploadFeedback.textContent = "Enviando imagens. Aguarde...";
@@ -836,7 +844,13 @@
             try {
                 const response = await fetch(API_ENVIO_URL, {
                     method: "POST",
-                    body: formData
+                    headers: {
+                        "Content-Type":
+                        "application/json"
+                    },
+                    body: JSON.stringify({
+                        images: selectedImagesBase64
+                    })
                 });
 
                 if (!response.ok) throw new Error("HTTP " + response.status);
@@ -845,6 +859,7 @@
                 uploadFeedback.textContent = data.message || "Imagens enviadas com sucesso.";
                 uploadFeedback.className = "upload-feedback success";
                 selectedImages = [];
+                selectedImagesBase64 = [];
                 multipleImageInput.value = "";
                 renderSelectedImages();
             } catch (error) {
